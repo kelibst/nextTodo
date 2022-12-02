@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import React, { useReducer, useState } from "react";
+import { TodoComment } from "typescript";
 import { v4 as uuidv4 } from "uuid";
+import Buttons from "./Buttons";
+import buttonReducer from "./reduce/buttonReducer";
 
 interface task {
   id: string;
@@ -28,6 +31,7 @@ const initialTodos: task[] = [
 const Todos = () => {
   const [taskvalue, setTask] = useState("");
   const [todos, setTodos] = useState(initialTodos);
+  // const [todo, settodo] = useState(null)
   const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
     setTask(event.target.value);
@@ -48,14 +52,72 @@ const Todos = () => {
     }
   };
 
+  const handleChangeCheckbox = (id: string) => {
+    setTodos(
+      todos.map((todo) => {
+        if (todo.id === id) {
+          return { ...todo, complete: !todo.complete };
+        } else {
+          return todo;
+        }
+      })
+    );
+  };
+
+  const [filter, dispatchFilter] = useReducer(buttonReducer, "ALL");
+
+  const handleShowAll = () => {
+    dispatchFilter({ type: "SHOW_ALL" });
+  };
+
+  const handleShowComplete = () => {
+    dispatchFilter({ type: "SHOW_COMPLETE" });
+  };
+
+  const handleShowIncomplete = () => {
+    dispatchFilter({ type: "SHOW_INCOMPLETE" });
+  };
+  const filteredTodos = todos.filter((todo) => {
+    if (filter === "ALL") {
+      return true;
+    }
+
+    if (filter === "COMPLETE" && todo.complete) {
+      return true;
+    }
+
+    if (filter === "INCOMPLETE" && !todo.complete) {
+      return true;
+    }
+
+    return false;
+  });
+
   return (
     <div>
+      <div className="Buttons">
+        <button type="button" onClick={handleShowAll}>
+          Show All
+        </button>
+        <button type="button" onClick={handleShowComplete}>
+          Show Complete
+        </button>
+        <button type="button" onClick={handleShowIncomplete}>
+          Show Incomplete
+        </button>
+      </div>
+
       <ul>
-        {todos.length ? (
-          todos.map((todo) => {
+        {filteredTodos.length ? (
+          filteredTodos.map((todo) => {
             return (
               <li key={todo.id}>
                 <label>{todo.task}</label>
+                <input
+                  type="checkbox"
+                  checked={todo.complete}
+                  onChange={() => handleChangeCheckbox(todo.id)}
+                />
               </li>
             );
           })

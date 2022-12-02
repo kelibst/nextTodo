@@ -1,0 +1,17 @@
+ <ul>
+        {
+          
+        todos.size ? () : (
+          <a>Sorry You have no active todos</a>
+        )
+      
+      }
+      </ul>
+      <form onSubmit={submitTodo}>
+        <input
+          type="text"
+          placeholder="Enter your task here"
+          value={taskvalue}
+          onChange={handleChangeInput}
+        />
+      </form>
