@@ -1,5 +1,5 @@
 import React, { useReducer } from "react";
-import buttonReducer from "./reduce/buttonReducer";
+import buttonReducer from "../../reducer/buttonReducer";
 
 const Buttons = () => {
   const [filter, dispatchFilter] = useReducer(buttonReducer, "ALL");

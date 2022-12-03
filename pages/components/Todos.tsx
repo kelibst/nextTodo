@@ -1,16 +1,10 @@
 import React, { useReducer, useState } from "react";
-import { TodoComment } from "typescript";
 import { v4 as uuidv4 } from "uuid";
-import Buttons from "./Buttons";
-import buttonReducer from "./reduce/buttonReducer";
+import taskInterface from "../../interfaces/taskInterfaces";
+import buttonReducer from "../../reducer/buttonReducer";
+import todoReducer from "../../reducer/todoReducer";
 
-interface task {
-  id: string;
-  task: string;
-  complete: boolean;
-}
-
-const initialTodos: task[] = [
+const initialTodos: taskInterface[] = [
   {
     id: uuidv4(),
     task: "Learn React",
@@ -29,9 +23,12 @@ const initialTodos: task[] = [
 ];
 
 const Todos = () => {
+  const [filter, dispatchFilter] = useReducer(buttonReducer, "ALL");
+
+  const [todos, dispatchTodo] = useReducer(todoReducer, initialTodos);
+
   const [taskvalue, setTask] = useState("");
-  const [todos, setTodos] = useState(initialTodos);
-  // const [todo, settodo] = useState(null)
+  // const [todos, setTodos] = useState(initialTodos);
   const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
     setTask(event.target.value);
@@ -41,30 +38,23 @@ const Todos = () => {
     event.preventDefault();
 
     if (taskvalue.trim().length) {
+      setTask("");
+
       const newTask = {
         id: uuidv4(),
         task: taskvalue,
         complete: false,
       };
-
-      setTodos([...todos, newTask]);
-      setTask("");
+      dispatchTodo({ type: "ADD_TODO", payload: { todo: newTask } });
     }
   };
 
-  const handleChangeCheckbox = (id: string) => {
-    setTodos(
-      todos.map((todo) => {
-        if (todo.id === id) {
-          return { ...todo, complete: !todo.complete };
-        } else {
-          return todo;
-        }
-      })
-    );
+  const handleChangeCheckbox = (todo: taskInterface) => {
+    dispatchTodo({
+      type: todo.complete ? "INCOMPLETE_TASK" : "COMPLETE_TASK",
+      payload: { todo },
+    });
   };
-
-  const [filter, dispatchFilter] = useReducer(buttonReducer, "ALL");
 
   const handleShowAll = () => {
     dispatchFilter({ type: "SHOW_ALL" });
@@ -77,20 +67,17 @@ const Todos = () => {
   const handleShowIncomplete = () => {
     dispatchFilter({ type: "SHOW_INCOMPLETE" });
   };
-  const filteredTodos = todos.filter((todo) => {
-    if (filter === "ALL") {
-      return true;
+  const filteredTodos = todos.filter((todo: taskInterface) => {
+    switch (filter) {
+      case "ALL":
+        return true;
+      case "COMPLETE":
+        return todo.complete ? true : false;
+      case "INCOMPLETE":
+        return todo.complete ? false : true;
+      default:
+        return true;
     }
-
-    if (filter === "COMPLETE" && todo.complete) {
-      return true;
-    }
-
-    if (filter === "INCOMPLETE" && !todo.complete) {
-      return true;
-    }
-
-    return false;
   });
 
   return (
@@ -109,14 +96,14 @@ const Todos = () => {
 
       <ul>
         {filteredTodos.length ? (
-          filteredTodos.map((todo) => {
+          filteredTodos.map((todo: taskInterface) => {
             return (
               <li key={todo.id}>
                 <label>{todo.task}</label>
                 <input
                   type="checkbox"
                   checked={todo.complete}
-                  onChange={() => handleChangeCheckbox(todo.id)}
+                  onChange={() => handleChangeCheckbox(todo)}
                 />
               </li>
             );
