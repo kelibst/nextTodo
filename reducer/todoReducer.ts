@@ -1,7 +1,15 @@
 import taskInterface from "../interfaces/taskInterfaces";
 import { v4 as uuidv4 } from "uuid";
 
-const todoReducer = (state, action) => {
+const todoReducer = (
+  state: taskInterface[],
+  action: {
+    type: string;
+    payload: {
+      todo: taskInterface;
+    };
+  }
+) => {
   switch (action.type) {
     case "COMPLETE_TASK":
       return state.map((todo) => {
