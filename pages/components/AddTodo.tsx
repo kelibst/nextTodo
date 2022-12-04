@@ -1,6 +1,11 @@
 import React from "react";
-
-const AddTodo = ({ submitTask, value, handleInputChange }) => {
+interface propsInterface {
+  submitTask: React.FormEventHandler<HTMLFormElement>;
+  value: string;
+  handleInputChange: React.ChangeEventHandler<HTMLInputElement>;
+}
+const AddTodo = (props: propsInterface) => {
+  const { submitTask, value, handleInputChange } = props;
   return (
     <form onSubmit={submitTask}>
       <input

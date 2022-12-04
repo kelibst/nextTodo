@@ -1,7 +1,14 @@
 import React, { useReducer } from "react";
 import buttonReducer from "../../reducer/buttonReducer";
 
-const FilterButtons = ({ dispatch }) => {
+interface propsInterface {
+  dispatch: React.Dispatch<{
+    type: string;
+  }>;
+}
+
+const FilterButtons = (props: propsInterface) => {
+  const { dispatch } = props;
   const handleShowAll = () => {
     dispatch({ type: "SHOW_ALL" });
   };
