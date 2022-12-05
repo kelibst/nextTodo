@@ -6,6 +6,7 @@ import todoReducer from "../../reducer/todoReducer";
 import AddTodo from "./AddTodo";
 import FilterButtons from "./FilterButtons";
 import RenderTodos from "./RenderTodos";
+import { TodoProvider } from "../context/todoContext";
 
 const initialTodos: taskInterface[] = [
   {
@@ -66,17 +67,19 @@ const Todos = () => {
   });
 
   return (
-    <div>
-      <FilterButtons dispatch={dispatchFilter} />
+    <TodoProvider value={dispatchTodo}>
+      <div>
+        <FilterButtons dispatch={dispatchFilter} />
 
-      <RenderTodos dispatch={dispatchTodo} todos={filteredTodos} />
+        <RenderTodos todos={filteredTodos} />
 
-      <AddTodo
-        value={taskvalue}
-        submitTask={submitTodo}
-        handleInputChange={handleChangeInput}
-      />
-    </div>
+        <AddTodo
+          value={taskvalue}
+          submitTask={submitTodo}
+          handleInputChange={handleChangeInput}
+        />
+      </div>
+    </TodoProvider>
   );
 };
 

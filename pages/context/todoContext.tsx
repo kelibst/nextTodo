@@ -1,15 +1,11 @@
 import React, { createContext, useContext } from "react";
 
-const todoContext = createContext(null);
+const TodoContext = createContext(null);
 
-const useTodo = () => useContext(todoContext);
+const useTodo = () => useContext(TodoContext);
 
-// const todoProvider = ({value, children}) => {
-//     return (
-//         <todoContext.Provider value={value}>
-//             {children}
-//         </todoContext.Provider>
-//     )
-// }
+const TodoProvider = ({ value, children }) => {
+  return <TodoContext.Provider value={value}>{children}</TodoContext.Provider>;
+};
 
-export { todoContext, useTodo };
+export { TodoProvider, useTodo };

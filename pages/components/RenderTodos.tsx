@@ -1,18 +1,15 @@
 import React from "react";
 import taskInterface from "../../interfaces/taskInterfaces";
+import { useTodo } from "../context/todoContext";
 
 interface dispatchInterface {
-  dispatch: React.Dispatch<{
-    type: string;
-    payload: {
-      todo: taskInterface;
-    };
-  }>;
   todos: taskInterface[];
 }
 
 const RenderTodos = (props: dispatchInterface) => {
-  const { dispatch, todos } = props;
+  const dispatch = useTodo();
+
+  const { todos } = props;
   const handleChangeCheckbox = (todo: taskInterface) => {
     dispatch({
       type: todo.complete ? "INCOMPLETE_TASK" : "COMPLETE_TASK",
